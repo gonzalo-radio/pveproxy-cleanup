@@ -42,6 +42,9 @@ mkdir -p "${DIST_DIR}"
 printf '%bbuilding %s...%b\n' "${GREEN}" "${BINARY_NAME}" "${NC}"
 go build -o "${DIST_DIR}/${BINARY_NAME}" main.go
 
+printf '%bgenerating sha256sum...%b\n' "${GREEN}" "${NC}"
+(cd "${DIST_DIR}" && sha256sum "${BINARY_NAME}" > "${BINARY_NAME}.sha256")
+
 printf '%bcopying systemd files...%b\n' "${GREEN}" "${NC}"
 cp pveproxy-cleanup.service "${DIST_DIR}/"
 cp pveproxy-cleanup.timer "${DIST_DIR}/"
@@ -53,6 +56,7 @@ tar -czf "${BINARY_NAME}-${VERSION}.tar.gz" -C "${DIST_DIR}" .
 printf '%bbuild complete!%b\n\n' "${GREEN}" "${NC}"
 printf "distribution files:\n"
 printf "  %s/%s\n" "${DIST_DIR}" "${BINARY_NAME}"
+printf "  %s/%s.sha256\n" "${DIST_DIR}" "${BINARY_NAME}"
 printf "  %s/pveproxy-cleanup.service\n" "${DIST_DIR}"
 printf "  %s/pveproxy-cleanup.timer\n" "${DIST_DIR}"
 printf "  %s/install.sh\n" "${DIST_DIR}"
