@@ -1,0 +1,10 @@
+[Unit]
+Description=PVE Proxy Shutdown Worker Cleanup
+Documentation=man:pveproxy-cleanup(1)
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/pveproxy-cleanup
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=pveproxy-cleanup

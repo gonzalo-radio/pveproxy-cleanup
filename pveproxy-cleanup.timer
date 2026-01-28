@@ -1,0 +1,11 @@
+[Unit]
+Description=Run PVE Proxy Shutdown Worker Cleanup every 5 minutes
+Documentation=man:pveproxy-cleanup(1)
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=5min
+AccuracySec=1s
+
+[Install]
+WantedBy=timers.target
