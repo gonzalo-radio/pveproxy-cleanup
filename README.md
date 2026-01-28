@@ -1,3 +1,6 @@
+> [!CAUTION]
+>  This code has been generated with AI tools
+
 # pveproxy-cleanup
 
 Kills pveproxy worker processes stuck in shutdown state.
