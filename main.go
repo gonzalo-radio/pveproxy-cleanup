@@ -12,10 +12,12 @@ import (
 	"time"
 )
 
-const (
-	targetProcess = "pveproxy worker (shutdown)"
-	sigTermWait   = 10 * time.Second
-)
+const sigTermWait = 10 * time.Second
+
+var targetProcesses = []string{
+	"pveproxy worker (shutdown)",
+	"spiceproxy worker (shutdown)",
+}
 
 type LogLevel int
 
@@ -57,20 +59,20 @@ func main() {
 }
 
 func run() error {
-	pids, err := findShutdownPveproxyWorkers()
+	pids, err := findShutdownWorkers()
 	if err != nil {
             return fmt.Errorf("failed to find processes: %w", err)
 	}
 
 	if len(pids) == 0 {
 		if logLevel == Debug {
-			log.Println("no pveproxy worker (shutdown) processes found")
+			log.Println("no worker (shutdown) processes found")
 		}
 		return nil
 	}
 
 	if logLevel >= Verbose {
-		log.Printf("found %d pveproxy worker (shutdown) process(es): %v", len(pids), pids)
+		log.Printf("found %d worker (shutdown) process(es): %v", len(pids), pids)
 	}
 
 	if dryRun {
@@ -120,7 +122,7 @@ func run() error {
 	return nil
 }
 
-func findShutdownPveproxyWorkers() ([]int, error) {
+func findShutdownWorkers() ([]int, error) {
 	procDir := "/proc"
 	entries, err := os.ReadDir(procDir)
 	if err != nil {
@@ -163,10 +165,13 @@ func findShutdownPveproxyWorkers() ([]int, error) {
 			log.Printf("PID %d cmdline: %s", pid, cmdline)
 		}
 
-		if strings.Contains(cmdline, targetProcess) {
-			pids = append(pids, pid)
-			if logLevel == Debug {
-				log.Printf("PID %d matches target process", pid)
+		for _, target := range targetProcesses {
+			if strings.Contains(cmdline, target) {
+				pids = append(pids, pid)
+				if logLevel == Debug {
+					log.Printf("PID %d matches target process %q", pid, target)
+				}
+				break
 			}
 		}
 	}

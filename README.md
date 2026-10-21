@@ -3,7 +3,7 @@
 
 # pveproxy-cleanup
 
-Kills pveproxy worker processes stuck in shutdown state.
+Kills pveproxy and spiceproxy worker processes stuck in shutdown state.
 
 ## Build
 
@@ -93,7 +93,7 @@ systemctl start pveproxy-cleanup
 
 1. Scans `/proc` for all processes
 2. Reads each process's `/proc/[pid]/cmdline`
-3. Finds processes containing "pveproxy worker (shutdown)"
+3. Finds processes containing "pveproxy worker (shutdown)" or "spiceproxy worker (shutdown)"
 4. Sends SIGTERM (15) to matched processes (unless `--dry` is used)
 5. Waits 10 seconds
 6. Sends SIGKILL (9) to processes still running (unless `--dry` is used)
